@@ -1,0 +1,58 @@
+log output/heathold.log
+processors * * *
+units metal
+atom_style atomic
+boundary p p p
+
+read_restart restart/restart.join
+reset_timestep 0
+
+pair_style eam/alloy
+pair_coeff * * potential/al-cu-set.eam.alloy Al Cu
+
+neighbor 2 bin
+neigh_modify every 10 delay 0 check no
+
+group Al type 1
+group Cu type 2
+
+variable Ztop equal (zhi-10)
+variable Zbot equal (zlo+20)
+
+region upper block INF INF INF INF ${Ztop} INF units box
+group upper region upper
+group Cu_active subtract Cu upper
+
+region lower block INF INF INF INF INF ${Zbot} units box
+group lower region lower
+group Al_active subtract Al lower
+
+group boundary union lower upper
+group mobile subtract all boundary
+
+compute msdAl Al_active msd com yes
+compute msdCu Cu_active msd com yes
+
+fix msdAl_out Al_active ave/time 10 100 1000 c_msdAl[4] file output/msd_Al.txt
+fix msdCu_out Cu_active ave/time 10 100 1000 c_msdCu[4] file output/msd_Cu.txt
+
+timestep 0.001
+thermo 1000
+thermo_style custom step temp pe ke etotal press
+
+dump d_heat all custom 2000 output/dump_heat.lammpstrj id type x y z
+
+# HEAT UP
+fix heat_nvt mobile nvt temp 300 500 0.2
+run 100000
+
+unfix heat_nvt
+
+write_restart restart/restart.heatup
+
+# HOLD
+fix hold_nvt mobile nvt temp 500 500 0.2
+run 200000
+
+write_restart restart/restart.hold
+write_data output/final_snapshot.data
