@@ -11,5 +11,7 @@ export NUMBA_NUM_THREADS=$SLURM_NPROCS
 export OMP_NUM_THREADS=$SLURM_NPROCS
 export OMPI_MCA_btl_vader_single_copy_mechanism=none
 
+cd /home/lmpuser/lmpui
+
 echo "$PWD"
-mpirun LMP_PROG -in INPUT_FILE
+mpirun /opt/bin/lmp_mpi -in INPUT_FILE
