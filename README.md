@@ -4,7 +4,7 @@ A reproducible molecular dynamics execution framework built on Docker, Slurm, an
 
 ## From repository root:
 
-git clone [<repo>](https://github.com/erkaivs/LAMMPS-Textual-UI/) \
+git clone [<repo>](https://github.com/erkaivs/LAMMPS-Textual-UI.git) \
 docker compose pull \
 docker compose up -d 
 
