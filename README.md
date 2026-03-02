@@ -1,19 +1,61 @@
 # LAMMPS Textual User Interface
-Containerized LAMMPS + Slurm Cluster with Textual UI Orchestration \
-A reproducible molecular dynamics execution framework built on Docker, Slurm, and a Python-based Textual User Interface. 
 
-## From repository root:
+## What is LAMMPS?
+LAMMPS (Large-scale Atomic/Molecular Massively Parallel Simulator) is an open-source molecular dynamics simulation software designed for particle-based modeling of materials at the atomic scale.
 
-git clone [<repo>](https://github.com/erkaivs/LAMMPS-Textual-UI.git) \
-docker compose pull \
-docker compose up -d 
+Official website:  
+https://www.lammps.org/
 
-Check the running container: \
-docker ps 
+LAMMPS supports:
+- Classical molecular dynamics
+- Parallel computation (MPI)
+- Multiple interatomic potentials (EAM, Lennard-Jones, etc.)
+- Customizable ensembles and boundary conditions
 
-To access the head node: \
-docker exec -it lmphead bash 
+---
 
-Check the slurm status: \
-sinfo \
-squeue 
+## Why a Textual UI?
+
+LAMMPS operates primarily through command-line input scripts. While flexible, this approach can:
+
+- Increase configuration errors
+- Fragment simulation stages
+- Reduce workflow traceability
+- Complicate reproducibility across machines
+
+This project introduces a structured Textual User Interface (Textual UI) that:
+
+- Enforces deterministic simulation stages
+- Automates restart handling
+- Integrates post-processing (e.g., MSD analysis)
+- Reduces manual shell interaction
+
+The UI preserves full transparency of LAMMPS scripting while adding workflow control.
+
+---
+
+## Containerized Execution with Docker
+
+To ensure reproducibility and portability, the entire execution environment is containerized using Docker.
+
+The Docker image includes:
+
+- LAMMPS compiled with MPI and MANYBODY package
+- Slurm workload manager
+- SSH and Munge services
+- Pre-configured environment variables
+- Embedded Textual UI application
+
+This eliminates dependency inconsistencies across systems.
+
+---
+
+## Running the System
+
+Once the images are published to Docker Hub, users only need:
+
+```bash
+git clone https://github.com/erkaivs/LAMMPS-Textual-UI.git
+cd <foldername>
+docker compose pull
+docker compose up -d
