@@ -1,0 +1,22 @@
+from rosandi/ghead
+
+workdir /opt
+run apt install --yes --quiet git
+run git clone https://github.com/lammps/lammps.git
+
+workdir /opt/lammps/src
+run make yes-MANYBODY
+run make mpi -j4
+run mkdir /opt/bin
+run mv lmp_mpi /opt/bin
+workdir /root
+run cp -a /opt/lammps/potentials /opt/potentials
+run cp -a /opt/lammps/examples /opt/examples
+run rm -r /opt/lammps
+run apt install sudo
+run apt clean
+copy profile.sh /etc/profile.d/profile_gur.sh
+copy submit.sh /home/share/files/
+copy entry-head.sh /scripts/
+run chmod +x /scripts/entry-head.sh
+cmd ["/scripts/entry-head.sh"]
