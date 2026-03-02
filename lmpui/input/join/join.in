@@ -1,0 +1,34 @@
+log output/join.log
+
+processors * * *
+units metal
+atom_style atomic
+boundary p p p
+
+read_restart restart/restart.relax
+reset_timestep 0
+
+pair_style eam/alloy
+pair_coeff * * potential/al-cu-set.eam.alloy Al Cu
+
+neighbor 2 bin
+neigh_modify every 10 delay 0 check no
+
+group Al type 1
+group Cu type 2
+
+compute ke all ke/atom
+fix aveKE all ave/atom 10 100 1000 c_ke
+variable AtomTemp atom "2*f_aveKE/(3*8.617333e-5)"
+
+timestep 0.001
+thermo 1000
+thermo_style custom step temp pe ke etotal press
+
+dump d_join all custom 2000 output/dump_join.lammpstrj id type x y z v_AtomTemp
+
+fix nve mobile nve
+
+run 120000
+
+write_restart restart/restart.join
