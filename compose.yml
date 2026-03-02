@@ -13,7 +13,7 @@ services:
       - guriang
     volumes:
       - slurmstate:/var/slurm
-      - gshare:/home
+      - gshare:/home/share
       - ./slurm.conf:/usr/local/etc/slurm.conf
 
   node01:
@@ -24,7 +24,7 @@ services:
     networks:
       - guriang
     volumes:
-      - gshare:/home
+      - gshare:/home/share
       - ./slurm.conf:/usr/local/etc/slurm.conf
 
   node02:
@@ -35,7 +35,7 @@ services:
     networks:
       - guriang
     volumes:
-      - gshare:/home
+      - gshare:/home/share
       - ./slurm.conf:/usr/local/etc/slurm.conf
 
   node03:
@@ -46,7 +46,7 @@ services:
     networks:
       - guriang
     volumes:
-      - gshare:/home
+      - gshare:/home/share
       - ./slurm.conf:/usr/local/etc/slurm.conf
 
   node04:
@@ -57,7 +57,7 @@ services:
     networks:
       - guriang
     volumes:
-      - gshare:/home
+      - gshare:/home/share
       - ./slurm.conf:/usr/local/etc/slurm.conf
 
 volumes:
