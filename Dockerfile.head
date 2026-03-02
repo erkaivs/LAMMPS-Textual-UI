@@ -15,13 +15,13 @@ run cp -a /opt/lammps/examples /opt/examples
 run rm -r /opt/lammps
 run apt install sudo
 run apt clean
-COPY profile.sh /etc/profile.d/profile_gur.sh
-COPY submit.sh /home/share/files/
-COPY entry-head.sh /scripts/
-RUN chmod +x /scripts/entry-head.sh
+copy profile.sh /etc/profile.d/profile_gur.sh
+copy submit.sh /home/share/files/
+copy entry-head.sh /scripts/
+run chmod +x /scripts/entry-head.sh
 
-COPY lmpui /home/lmpuser/lmpui
-RUN mkdir -p /home/lmpuser
-RUN chown -R 1000:1000 /home/lmpuser
+copy lmpui /home/lmpuser/lmpui
+run mkdir -p /home/lmpuser
+run chown -R 1000:1000 /home/lmpuser
 
-CMD ["/scripts/entry-head.sh"]
+cmd ["/scripts/entry-head.sh"]
