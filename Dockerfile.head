@@ -16,7 +16,6 @@ run rm -r /opt/lammps
 run apt install sudo
 run apt clean
 copy profile.sh /etc/profile.d/profile_gur.sh
-copy submit.sh /home/share/files/
 copy entry-head.sh /scripts/
 run chmod +x /scripts/entry-head.sh
 
