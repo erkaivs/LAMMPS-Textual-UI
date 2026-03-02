@@ -1,4 +1,4 @@
-# lmpcluster  
+# LAMMPS Textual User Interface
 Containerized LAMMPS + Slurm Cluster with Textual UI Orchestration
 A reproducible molecular dynamics execution framework built on Docker, Slurm, and a Python-based Textual User Interface.
 
