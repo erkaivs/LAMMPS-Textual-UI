@@ -16,7 +16,7 @@ OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 RESULT_DIR = os.path.join(BASE_DIR, "result")
 ANALYSIS_DIR = os.path.join(BASE_DIR, "analisis")
 SUBMIT_DIR = os.path.join(BASE_DIR, "submit")
-LMP_PROG = os.path.expanduser("/opt/bin/lmp_mpi")
+LMP_PROG = os.path.expanduser("/home/share/bin/lmp_mpi")
 
 sys.path.append(ANALYSIS_DIR)
 
