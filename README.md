@@ -56,6 +56,12 @@ Once the images are published to Docker Hub, users only need:
 
 ```bash
 git clone https://github.com/erkaivs/LAMMPS-Textual-UI.git
-cd <foldername>
+cd LAMMPS-Textual-UI
 docker compose pull
 docker compose up -d
+```
+
+To activate the container:
+```bash
+docker exec -ti lmphead bash
+```
