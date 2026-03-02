@@ -12,4 +12,4 @@ export OMP_NUM_THREADS=$SLURM_NPROCS
 export OMPI_MCA_btl_vader_single_copy_mechanism=none
 
 echo "$PWD"
-mpirun /home/share/bin/lmp_mpi -in INPUT_FILE
+mpirun LMP_PROG -in INPUT_FILE
