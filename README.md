@@ -16,7 +16,7 @@ LAMMPS supports:
 
 ## Why a Textual UI?
 
-LAMMPS operates primarily through command-line input scripts. While flexible, this approach can:
+LAMMPS operates through command-line input scripts. While flexible, this approach can:
 
 - Increase configuration errors
 - Fragment simulation stages
