@@ -5,7 +5,7 @@ x-common-environment: &lmpenv
 
 services:
   head:
-    image: nerozane/lmpclstr-head:1.0
+    image: nerozane/lmpclstr-head:1.1
     hostname: ghead
     container_name: lmphead
     <<: *lmpenv
@@ -17,7 +17,7 @@ services:
       - ./slurm.conf:/usr/local/etc/slurm.conf
 
   node01:
-    image: nerozane/lmpclstr-node:1.0
+    image: nerozane/lmpclstr-node:1.1
     hostname: node01
     container_name: lmpnode01
     <<: *lmpenv
@@ -28,7 +28,7 @@ services:
       - ./slurm.conf:/usr/local/etc/slurm.conf
 
   node02:
-    image: nerozane/lmpclstr-node:1.0
+    image: nerozane/lmpclstr-node:1.1
     hostname: node02
     container_name: lmpnode02
     <<: *lmpenv
@@ -39,7 +39,7 @@ services:
       - ./slurm.conf:/usr/local/etc/slurm.conf
 
   node03:
-    image: nerozane/lmpclstr-node:1.0
+    image: nerozane/lmpclstr-node:1.1
     hostname: node03
     container_name: lmpnode03
     <<: *lmpenv
@@ -50,7 +50,7 @@ services:
       - ./slurm.conf:/usr/local/etc/slurm.conf
 
   node04:
-    image: nerozane/lmpclstr-node:1.0
+    image: nerozane/lmpclstr-node:1.1
     hostname: node04
     container_name: lmpnode04
     <<: *lmpenv
