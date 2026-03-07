@@ -1,0 +1,7 @@
+if [[ ! -d /home/share/workspace ]] ; then
+sudo mkdir /home/share/workspace
+sudo chown lmpuser: /home/share/workspace
+cp -r /home/lmpuser/lmpui /home/share/workspace
+fi
+
+source ~/venv/bin/activate
