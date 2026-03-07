@@ -19,6 +19,7 @@ copy profile.sh /etc/profile.d/profile_gur.sh
 copy entry-head.sh /scripts/
 run chmod +x /scripts/entry-head.sh
 copy lmpui /home/lmpuser/lmpui
+copy dotbashrc /home/lmpuser/.profile
 run mkdir -p /home/lmpuser
 run chown -R 1000:1000 /home/lmpuser
 
