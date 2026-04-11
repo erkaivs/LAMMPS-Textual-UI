@@ -1,7 +1,7 @@
 from rosandi/ghead
 
 workdir /opt
-run apt install --yes --quiet git
+run apt update && apt install -y git build-essential
 run git clone https://github.com/lammps/lammps.git
 
 workdir /opt/lammps/src
@@ -13,7 +13,7 @@ workdir /root
 run cp -a /opt/lammps/potentials /opt/potentials
 run cp -a /opt/lammps/examples /opt/examples
 run rm -r /opt/lammps
-run apt install sudo
+run apt install -y sudo
 run apt clean
 copy profile.sh /etc/profile.d/profile_gur.sh
 copy entry-head.sh /scripts/
