@@ -1,1 +1,0 @@
-All the files output (logs, msd, dumps) go here.
