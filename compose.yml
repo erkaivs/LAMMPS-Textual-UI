@@ -6,6 +6,9 @@ x-common-environment: &lmpenv
 services:
   head:
     image: nerozane/lmpclstr-head:1.2
+    build:
+      dockerfile: Dockerfile.head
+      context: .
     hostname: ghead
     container_name: lmphead
     <<: *lmpenv
