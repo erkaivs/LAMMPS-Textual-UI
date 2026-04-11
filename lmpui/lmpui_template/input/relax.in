@@ -1,4 +1,4 @@
-log output/relax.log
+log relax.log
 processors * * *
 dimension 3
 boundary p p p
@@ -9,8 +9,8 @@ atom_modify map array
 neighbor 1.0 nsq
 neigh_modify once no every 1 delay 0 check yes
 
-read_data potential/bottom_Al.lmp
-read_data potential/top_Cu.lmp add append shift 0.0 0.0 104.6
+read_data potentials/bottom_Al.lmp
+read_data potentials/top_Cu.lmp add append shift 0.0 0.0 104.6
 
 group Al type 1
 group Cu type 2
@@ -19,7 +19,7 @@ mass 1 26.98153860
 mass 2 63.54600000
 
 pair_style eam/alloy
-pair_coeff * * potential/al-cu-set.eam.alloy Al Cu
+pair_coeff * * potentials/al-cu-set.eam.alloy Al Cu
 
 neighbor 2 bin
 neigh_modify every 10 delay 0 check no
