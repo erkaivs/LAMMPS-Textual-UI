@@ -13,6 +13,9 @@ import shutil
 # ===================== PATH =====================
 
 def get_paths(app):
+    if not app.current_sim:
+        raise RuntimeError("No simulation selected")
+
     root = os.path.expanduser("~/lmpui")
     base = os.path.join(root, app.current_sim)
 
@@ -26,7 +29,7 @@ def get_paths(app):
         "submit": os.path.join(base, "submit")
     }
 
-LMP_PROG = os.path.expanduser("/opt/bin/lmp_mpi")
+LMP_PROG = os.path.abspath("/opt/bin/lmp_mpi")
 
 # ===================== UTIL =====================
 
@@ -39,17 +42,21 @@ def run_sbatch(stage: str, input_file: str, app) -> str:
     paths = get_paths(app)
 
     os.makedirs(paths["output"], exist_ok=True)
+    os.makedirs(paths["submit"], exist_ok=True)
 
     template = os.path.join(paths["submit"], "submit.bash")
     generated = os.path.join(paths["submit"], "submit_generated.bash")
 
+    # DEBUG
     if not os.path.exists(template):
-        return "submit not found."
+        return f"ERROR: submit.bash not found at {template}"
 
     with open(template) as f:
         txt = f.read()
 
     jobname = os.path.splitext(os.path.basename(input_file))[0]
+
+    input_file = os.path.abspath(input_file)
 
     txt = (
         txt.replace("JOBNAME", jobname)
@@ -75,9 +82,13 @@ def get_user_jobs(app):
 # ===================== SIMULATION =====================
 
 def list_sims(app):
-    root = get_paths(app)["root"]
-    return sorted([d for d in os.listdir(root)
-                   if d.startswith("sim") and os.path.isdir(os.path.join(root, d))])
+    root = os.path.expanduser("~/lmpui")
+    if not os.path.exists(root):
+        return []
+    return sorted([
+        d for d in os.listdir(root)
+        if d.startswith("sim") and os.path.isdir(os.path.join(root, d))
+    ])
 
 def next_sim_name(root):
     i = 1
@@ -88,18 +99,17 @@ def next_sim_name(root):
         i += 1
 
 def create_sim(app):
-    paths = get_paths(app)
-    root = paths["root"]
-
+    root = os.path.expanduser("~/lmpui")
     src = os.path.join(root, "lmpui_template")
+
     if not os.path.exists(src):
-        return "Template missing."
+        return None
 
     name = next_sim_name(root)
     dst = os.path.join(root, name)
 
     shutil.copytree(src, dst)
-    return f"{name} created."
+    return name
 
 # ===================== MAIN MENU =====================
 
@@ -108,12 +118,6 @@ class MainMenu(Screen):
         yield Header()
         yield Vertical(
             Button("SIMULATIONS", id="sim"),
-            Button("FILES", id="files"),
-            Button("RELAX", id="relax"),
-            Button("JOIN", id="join"),
-            Button("HEATHOLD", id="heathold"),
-            Button("STATISTICS", id="statistics"),
-            Button("RESULT", id="result"),
         )
         yield Footer()
 
@@ -121,7 +125,83 @@ class MainMenu(Screen):
         if e.button.id == "sim":
             self.app.push_screen(SimulationMenu())
 
-        elif e.button.id == "statistics":
+# ===================== SIM MENU =====================
+
+class SimulationMenu(Screen):
+    def compose(self):
+        yield Header()
+        yield Vertical(
+            Button("OPEN SIMULATION", id="open"),
+            Button("NEW SIMULATION", id="new"),
+            Button("BACK", id="back"),
+        )
+        yield Footer()
+
+    def on_button_pressed(self, e):
+        if e.button.id == "open":
+            self.app.push_screen(SimSelect())
+
+        elif e.button.id == "new":
+            sim_name = create_sim(self.app)
+            if sim_name:
+                self.app.current_sim = sim_name
+                self.app.notify(f"created {sim_name}")
+                self.app.push_screen(SimulationDashboard())
+            else:
+                self.app.notify("template missing")
+
+        elif e.button.id == "back":
+            self.app.pop_screen()
+
+# ===================== SIM SELECT =====================
+
+class SimSelect(Screen):
+    def compose(self):
+        yield Header()
+        sims = list_sims(self.app)
+
+        with Vertical():
+            if not sims:
+                yield Static("NO SIMULATIONS")
+
+            for i, s in enumerate(sims):
+                yield Button(s, id=f"s_{i}")
+
+            yield Button("BACK", id="back")
+
+        yield Footer()
+
+    def on_button_pressed(self, e):
+        if e.button.id == "back":
+            self.app.pop_screen()
+
+        elif e.button.id.startswith("s_"):
+            idx = int(e.button.id.split("_")[1])
+            sim = list_sims(self.app)[idx]
+
+            self.app.current_sim = sim
+            self.app.push_screen(SimulationDashboard())
+
+# ===================== DASHBOARD =====================
+
+class SimulationDashboard(Screen):
+    def compose(self):
+        yield Header()
+        yield Static(f"SIM: {self.app.current_sim}")
+
+        yield Vertical(
+            Button("FILES", id="files"),
+            Button("RELAX", id="relax"),
+            Button("JOIN", id="join"),
+            Button("HEATHOLD", id="heathold"),
+            Button("STATISTICS", id="statistics"),
+            Button("RESULT", id="result"),
+        )
+
+        yield Footer()
+
+    def on_button_pressed(self, e):
+        if e.button.id == "statistics":
             paths = get_paths(self.app)
 
             sys.path.append(paths["analysis"])
@@ -133,7 +213,6 @@ class MainMenu(Screen):
             os.makedirs(result_dir, exist_ok=True)
 
             STATS_ANALYSIS.run_statistics(msd_dir, result_dir)
-            self.app.notify("statistics done")
 
         else:
             self.app.push_screen({
@@ -143,51 +222,6 @@ class MainMenu(Screen):
                 "heathold": StageMenu("heathold"),
                 "result": ResultStageMenu(),
             }[e.button.id])
-
-# ===================== SIM MENU =====================
-
-class SimulationMenu(Screen):
-    def compose(self):
-        yield Header()
-        yield Vertical(
-            Button("SWITCH SIM", id="switch"),
-            Button("NEW SIM", id="new"),
-            Button("BACK", id="back"),
-        )
-        yield Footer()
-
-    def on_button_pressed(self, e):
-        if e.button.id == "switch":
-            self.app.push_screen(SimSelect())
-
-        elif e.button.id == "new":
-            msg = create_sim(self.app)
-            self.app.notify(msg)
-
-        elif e.button.id == "back":
-            self.app.pop_screen()
-
-class SimSelect(Screen):
-    def compose(self):
-        yield Header()
-        sims = list_sims(self.app)
-
-        with Vertical():
-            for i, s in enumerate(sims):
-                yield Button(s, id=f"s_{i}")
-            yield Button("BACK", id="back")
-
-        yield Footer()
-
-    def on_button_pressed(self, e):
-        if e.button.id == "back":
-            self.app.pop_screen()
-        else:
-            idx = int(e.button.id.split("_")[1])
-            sim = list_sims(self.app)[idx]
-            self.app.current_sim = sim
-            self.app.notify(f"switched to {sim}")
-            self.app.pop_screen()
 
 # ===================== FILE MENU =====================
 
@@ -199,12 +233,16 @@ class FileMenu(Screen):
             Button("JOIN FILES", id="join"),
             Button("HEATHOLD FILES", id="heathold"),
             Button("BACK", id="back"),
+            Button("BACK TO SIMS", id="root"),
         )
         yield Footer()
 
     def on_button_pressed(self, e):
         if e.button.id == "back":
             self.app.pop_screen()
+        elif e.button.id == "root":
+            self.app.current_sim = None
+            self.app.switch_screen(MainMenu())
         else:
             self.app.push_screen(StageFileMenu(e.button.id))
 
@@ -299,6 +337,39 @@ class FileBrowser(Screen):
         elif e.button.id in self.file_map:
             self.app.push_screen(FileView(self.file_map[e.button.id]))
 
+# ===================== REMOVE FILE =====================
+
+class RemoveFileBrowser(Screen):
+    def __init__(self, directory):
+        super().__init__()
+        self.directory = directory
+        self.file_map = {}
+
+    def compose(self):
+        yield Header()
+        yield Static("REMOVE FILES")
+
+        with Vertical():
+            if os.path.exists(self.directory):
+                for i, f in enumerate(sorted(os.listdir(self.directory))):
+                    if f.startswith(".") or f.endswith(".swp"):
+                        continue
+                    path = os.path.join(self.directory, f)
+                    if os.path.isfile(path):
+                        self.file_map[f"r_{i}"] = path
+                        yield Button(f, id=f"r_{i}")
+
+            yield Button("BACK", id="back")
+
+        yield Footer()
+
+    def on_button_pressed(self, e):
+        if e.button.id == "back":
+            self.app.pop_screen()
+        elif e.button.id in self.file_map:
+            os.remove(self.file_map[e.button.id])
+            self.app.pop_screen()
+
 # ===================== FILE VIEW =====================
 
 class FileView(Screen):
@@ -367,14 +438,13 @@ class StageMenu(Screen):
             paths = get_paths(self.app)
 
             sys.path.append(paths["analysis"])
+            module = importlib.import_module(f"{self.stage.upper()}_ANALYSIS")
+            importlib.reload(module)
+
             stage_dir = os.path.join(paths["result"], self.stage)
             os.makedirs(stage_dir, exist_ok=True)
 
-            module = importlib.import_module(f"{self.stage.upper()}_ANALYSIS")
-            importlib.reload(module)
             module.main(stage_dir)
-
-            self.app.notify("analysis done")
 
         elif e.button.id == "back":
             self.app.pop_screen()
@@ -440,7 +510,6 @@ class CancelJobSelector(Screen):
             idx = int(e.button.id.split("_")[1])
             jobid, _ = self.jobs[idx]
             run_shell(f"scancel {jobid}", self.app)
-            self.app.notify("killed")
             self.app.pop_screen()
 
 # ===================== QUEUE =====================
@@ -480,7 +549,7 @@ class ResultStageMenu(Screen):
 # ===================== APP =====================
 
 class LammpsUI(App):
-    current_sim = "sim1"
+    current_sim = None
 
     CSS = """
     Vertical { align: center middle; }
