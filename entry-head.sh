@@ -18,10 +18,10 @@ service munge start
 
 mkdir -p /home/share/bin
 mkdir -p /home/share/files
-if [[ ! -x /home/share/bin/lmp_mpi ]]; then
-        cp /opt/bin/lmp_mpi /home/share/bin/
-        cp -a /opt/potentials /home/share/files/
-fi
+cp /opt/bin/lmp_mpi /home/share/bin/
+chmod +x /home/share/bin/lmp_mpi
+chown -R 1000:1000 /home/share
+cp -a /opt/potentials /home/share/files/
 
 if [[ -z $NOSLURM ]]; then
         slurmctld -D
