@@ -50,7 +50,7 @@ thermo_style custom step temp pe ke etotal press
 
 dump d_relax all custom 5000 output/dump_relax.lammpstrj id type x y z
 
-velocity all create 300 6767676767 rot yes dist gaussian
+velocity all create 300 676767 rot yes dist gaussian
 
 min_style cg
 fix boxrelax all box/relax aniso 0.0
