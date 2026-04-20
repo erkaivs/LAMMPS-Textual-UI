@@ -8,7 +8,7 @@ if [[ ! -z $LMPUSER ]]; then
         runuser -u $LMPUSER -- cp /home/$LMPUSER/.ssh/id_ed25519.pub /home/$LMPUSER/.ssh/authorized_keys
         runuser -u $LMPUSER -- mkdir /home/$LMPUSER/venv
         runuser -u $LMPUSER -- python3 -m venv /home/$LMPUSER/venv
-        runuser -u $LMPUSER -- /home/$LMPUSER/venv/bin/pip install --no-cache-dir textual numpy matplotlib
+        runuser -u $LMPUSER -- /home/$LMPUSER/venv/bin/pip install --no-cache-dir textual numpy pandas matplotlib
 fi
 
 echo Booting head node: ghead
