@@ -25,7 +25,7 @@ def get_paths(app):
         "input": os.path.join(base, "input"),
         "output": os.path.join(base, "output"),
         "result": os.path.join(base, "result"),
-        "analysis": os.path.join(base, "analysis"),
+        "analysis": os.path.join(base, "analIsis"),
         "submit": os.path.join(base, "submit")
     }
 
@@ -418,7 +418,7 @@ class StageMenu(Screen):
         yield Vertical(
             Button("RUN", id="run"),
             Button("QUEUE", id="queue"),
-            Button("ANALYSIS", id="analysis"),
+            Button("ANALYSIS", id="analisis"),
             Button("CANCEL", id="cancel"),
             Button("BACK", id="back"),
         )
@@ -437,7 +437,7 @@ class StageMenu(Screen):
         elif e.button.id == "analysis":
             paths = get_paths(self.app)
 
-            sys.path.append(paths["analysis"])
+            sys.path.append(paths["analisis"])
             module = importlib.import_module(f"{self.stage.upper()}_ANALYSIS")
             importlib.reload(module)
 
