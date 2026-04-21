@@ -106,7 +106,6 @@ Reminder that the dump files can only be played with external software Ovito and
 Ovito is a software to visualize and explore particle simulations of any kind and size. Users can load file in Ovito with logs format such as .lammpstrj or for example dump_relax.* (the symbol (*) indicates numbers of steps). 
 
 Official Website for Ovito: 
-
 https://www.ovito.org
 
 ---
