@@ -112,4 +112,4 @@ https://www.ovito.org/
 
 ## DISCLAIMER
 
-This program is still improving, I apologize for the errors. Many features will be added!
+This program is still improving. Many features will be added!
