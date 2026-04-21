@@ -67,11 +67,13 @@ To activate and access the head container:
 
 ```bash
 docker exec -ti lmphead bash
+cd lmpui
 ```
 
-This will automatically put the user into an environment named venv. There will be two folders, and click the lmpui folder name.
+This will automatically put the user into an environment named venv. 
+There will be two folders, and click the lmpui folder name.
 
-Inside the lmpui folder exist lmpui_template and the program named LMP_NR.py. 
+Inside the lmpui folder, exists lmpui_template and the program named LMP_NR.py. 
 If the users want to run the program, type this to the terminal:
 
 ```bash
@@ -84,7 +86,7 @@ This should start the LAMMPS Textual User Interface.
 
 ## How does the program works?
 
-This prototype was developed for the Liebniz Fast Calculation MDS Competition, focusing on a diffusion study between Aluminum (Al) and Copper (Cu) using the Embedded Atom Method (EAM) potential. The primary objective is to compute the diffusion coefficient of Aluminum atoms initially placed on a Copper substrate through Mean Square Displacement (MSD) analysis within LAMMPS.
+This prototype was developed for the Leibniz Fast Calculation MDS Competition, focusing on a diffusion study between Aluminum (Al) and Copper (Cu) using the Embedded Atom Method (EAM) potential. The primary objective is to compute the diffusion coefficient of Aluminum atoms initially placed on a Copper substrate through Mean Square Displacement (MSD) analysis within LAMMPS.
 
 Running a single continuous simulation for this purpose is computationally expensive and prone to instability or failure, which can lead to significant time loss. To address this, the system restructures the simulation into deterministic, stage-based segments using restart files. This approach improves reliability, reduces wasted computation, and enables multiple simulations to run in parallel under limited hardware constraints.
 
