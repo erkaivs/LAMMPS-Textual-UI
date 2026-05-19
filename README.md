@@ -112,5 +112,5 @@ https://www.ovito.org/
 
 ## DISCLAIMER
 
-This program is still improving. Many features will be added!
+This program is still improving. Many features will be added! \
 For any inquiries or issues, please contact nailazanethaa at gmail dot com, or submit an issue.
